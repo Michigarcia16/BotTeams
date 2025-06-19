@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot de Preguntas Frecuentes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .search-box {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .search-box input {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        .result p {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chatbot de Preguntas Frecuentes</h1>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Escribe tu pregunta...">
+        </div>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        // Load FAQ data from JSON file
+        fetch('faq_data.json')
+            .then(response => response.json())
+            .then(data => {
+                const faqData = data;
+                const searchInput = document.getElementById('searchInput');
+                const resultDiv = document.getElementById('result');
+
+                searchInput.addEventListener('input', () => {
+                    const query = searchInput.value.toLowerCase();
+                    const result = faqData.find(faq => faq.question.toLowerCase().includes(query));
+                    resultDiv.innerHTML = result ? `<p><strong>Pregunta:</strong> ${result.question}<br><strong>Respuesta:</strong> ${result.answer}</p>` : '<p>No se encontró ninguna coincidencia.</p>';
+                });
+            })
+            .catch(error => console.error('Error al cargar los datos del FAQ:', error));
+    </script>
+</body>
+</html>
