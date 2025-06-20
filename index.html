@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Bot 🤖🔌 Engineering</title>
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -38,50 +39,90 @@
         .faq-item p {
             color: #555;
         }
+        .no-results {
+            color: #999;
+            text-align: center;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Chat Bot 🤖🔌 Engineering</h1>
-        <input type="text" id="searchInput" placeholder="Write your question here...">
+        <input type="text" id="searchInput" placeholder="Escribe tu pregunta aquí...">
         <div id="faqContainer"></div>
     </div>
+
     <script>
         const faqData = [
             {
                 question: "¿Es correcto el alambrado o el tipo de cableado (MTW vs SIS)?",
-                answer: "Se debe respetar el tipo de cable indicado en los planos eléctricos. En muchos casos, se ha corregido la nota general para especificar que se debe usar cable tipo SIS, incluso si inicialmente se indicaba MTW. Verificar la revisión más reciente del plano correspondiente."
+                answer: "Se debe respetar el tipo de cable indicado en los planos eléctricos..."
             },
             {
                 question: "¿Dónde debe ir ubicada la tablilla o el equipo (por ejemplo, STB1, TB9, etc.)?",
-                answer: "La ubicación debe coincidir con la representación física. Si el plano indica una celda incorrecta, se debe actualizar para reflejar la ubicación real del equipo. Consultar la revisión del plano para confirmar los cambios."
+                answer: "La ubicación debe coincidir con la representación física..."
             },
             {
                 question: "¿Qué color o calibre debe tener el cable en ciertos bornes?",
-                answer: "El color y calibre deben seguir el estándar del proyecto. Por ejemplo, conexiones a tierra suelen ir en blanco o gris, y el calibre puede variar entre #14 y #16 según el borne y la función. Se han hecho ajustes en los planos para unificar estos criterios."
+                answer: "El color y calibre deben seguir el estándar del proyecto..."
             },
             {
                 question: "¿Se deben usar tablillas de paso o conexiones directas?",
-                answer: "Depende del diseño del circuito. En algunos casos, se ha indicado que no se deben usar tablillas de interconexión entre secciones si estas forman una sola unidad de embarque. En otros, se agregan tablillas para facilitar el montaje."
+                answer: "Depende del diseño del circuito..."
             },
             {
                 question: "¿Qué hacer si hay discrepancias entre el plano unifilar, el 3D y la lista de materiales?",
-                answer: "Siempre se debe validar con la versión más reciente del plano. Si hay diferencias, se deben corregir los planos o cargar los materiales faltantes. Las decisiones deben basarse en la revisión más actual y en la validación del ingeniero responsable."
+                answer: "Siempre se debe validar con la versión más reciente del plano..."
             }
         ];
 
-        document.getElementById('searchInput').addEventListener('input', function() {
-            const query = this.value.toLowerCase();
+        const synonyms = {
+            "cableado": ["alambrado", "cable", "conductor"],
+            "ubicación": ["posición", "localización", "sitio"],
+            "color": ["tono"],
+            "calibre": ["grosor", "espesor"],
+            "tablilla": ["terminal", "conector", "borne", "bornes"]
+        };
+
+        function expandQuery(query) {
+            let words = query.toLowerCase().split(/\s+/);
+            let expanded = [...words];
+            words.forEach(word => {
+                if (synonyms[word]) {
+                    expanded = expanded.concat(synonyms[word]);
+                }
+            });
+            return [...new Set(expanded)];
+        }
+
+        const fuse = new Fuse(faqData, {
+            keys: ['question'],
+            threshold: 0.4,
+            includeScore: true
+        });
+
+        document.getElementById('searchInput').addEventListener('input', function () {
+            const query = this.value.trim();
             const faqContainer = document.getElementById('faqContainer');
             faqContainer.innerHTML = '';
 
-            faqData.forEach(item => {
-                if (item.question.toLowerCase().includes(query)) {
-                    const faqItem = document.createElement('div');
-                    faqItem.className = 'faq-item';
-                    faqItem.innerHTML = `<h2>${item.question}</h2><p>${item.answer}</p>`;
-                    faqContainer.appendChild(faqItem);
-                }
+            if (query === '') return;
+
+            const expandedWords = expandQuery(query);
+            const results = fuse.search(expandedWords.join(' '));
+
+            if (results.length === 0) {
+                faqContainer.innerHTML = '<p class="no-results">No se encontraron resultados. Intenta con otras palabras.</p>';
+                return;
+            }
+
+            results.forEach(result => {
+                const item = result.item;
+                const faqItem = document.createElement('div');
+                faqItem.className = 'faq-item';
+                faqItem.innerHTML = `<h2>${item.question}</h2><p>${item.answer}</p>`;
+                faqContainer.appendChild(faqItem);
             });
         });
     </script>
