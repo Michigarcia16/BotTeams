@@ -1,130 +1,199 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Bot 🤖🔌 Engineering</title>
-    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin: 20px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .faq-item {
-            margin: 20px 0;
-        }
-        .faq-item h2 {
-            color: #007BFF;
-        }
-        .faq-item p {
-            color: #555;
-        }
-        .no-results {
-            color: #999;
-            text-align: center;
-            margin-top: 20px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chat Bot 🤖🔌 Engineering</title>
+  https://cdn.jsdelivr.net/npm/fuse.js@6.6.2
+ :wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #333;
+      --primary-color: #007BFF;
+      --card-bg: #f9f9f9;
+      --hover-bg: #f1f9ff;
+    }
+
+    body.dark-mode {
+      --bg-color: #1e1e1e;
+      --text-color: #f0f0f0;
+      --card-bg: #2a2a2a;
+      --hover-bg: #333;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 60px auto;
+      padding: 30px;
+      background-color: var(--bg-color);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+      display: block;
+      margin: 0 auto 10px;
+      width: 60px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    .toggle-btn {
+      display: block;
+      margin: 0 auto 20px;
+      padding: 8px 16px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      background-color: var(--card-bg);
+      color: var(--text-color);
+    }
+
+    .faq-item {
+      margin-bottom: 25px;
+      padding: 20px;
+      border-left: 4px solid var(--primary-color);
+      background-color: var(--card-bg);
+      border-radius: 6px;
+      transition: background-color 0.3s ease;
+    }
+
+    .faq-item:hover {
+      background-color: var(--hover-bg);
+    }
+
+    .faq-item h2 {
+      margin: 0 0 10px;
+      font-size: 1.1rem;
+      color: var(--primary-color);
+    }
+
+    .faq-item p {
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .no-results {
+      text-align: center;
+      color: #999;
+      font-style: italic;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Chat Bot 🤖🔌 Engineering</h1>
-        <input type="text" id="searchInput" placeholder="Escribe tu pregunta aquí...">
-        <div id="faqContainer"></div>
-    </div>
+  <div class="container">
+    <img src="https://img.icons8.com/ios-filled/100/007BFF/g
+    <h1>Chat Bot 🤖🔌 Engineering</h1>
+    <button class="toggle-btn" onclick="toggleDarkMode()">🌙 Cambiar modo</button>
+    <input type="text" id="searchInput" placeholder="Escribe tu pregunta aquí...">
+    <div id="faqContainer"></div>
+  </div>
 
-    <script>
-        const faqData = [
-            {
-                question: "¿Es correcto el alambrado o el tipo de cableado (MTW vs SIS)?",
-                answer: "Se debe respetar el tipo de cable indicado en los planos eléctricos..."
-            },
-            {
-                question: "¿Dónde debe ir ubicada la tablilla o el equipo (por ejemplo, STB1, TB9, etc.)?",
-                answer: "La ubicación debe coincidir con la representación física..."
-            },
-            {
-                question: "¿Qué color o calibre debe tener el cable en ciertos bornes?",
-                answer: "El color y calibre deben seguir el estándar del proyecto..."
-            },
-            {
-                question: "¿Se deben usar tablillas de paso o conexiones directas?",
-                answer: "Depende del diseño del circuito..."
-            },
-            {
-                question: "¿Qué hacer si hay discrepancias entre el plano unifilar, el 3D y la lista de materiales?",
-                answer: "Siempre se debe validar con la versión más reciente del plano..."
-            }
-        ];
+  <script>
+    const faqData = [
+      {
+        question: "¿Es correcto el alambrado o el tipo de cableado (MTW vs SIS)?",
+        answer: "Se debe respetar el tipo de cable indicado en los planos eléctricos..."
+      },
+      {
+        question: "¿Dónde debe ir ubicada la tablilla o el equipo (por ejemplo, STB1, TB9, etc.)?",
+        answer: "La ubicación debe coincidir con la representación física..."
+      },
+      {
+        question: "¿Qué color o calibre debe tener el cable en ciertos bornes?",
+        answer: "El color y calibre deben seguir el estándar del proyecto..."
+      },
+      {
+        question: "¿Se deben usar tablillas de paso o conexiones directas?",
+        answer: "Depende del diseño del circuito..."
+      },
+      {
+        question: "¿Qué hacer si hay discrepancias entre el plano unifilar, el 3D y la lista de materiales?",
+        answer: "Siempre se debe validar con la versión más reciente del plano..."
+      }
+    ];
 
-        const synonyms = {
-            "cableado": ["alambrado", "cable", "conductor"],
-            "ubicación": ["posición", "localización", "sitio"],
-            "color": ["tono"],
-            "calibre": ["grosor", "espesor"],
-            "tablilla": ["terminal", "conector", "borne", "bornes"]
-        };
+    const synonyms = {
+      "cableado": ["alambrado", "cable", "conductor"],
+      "ubicación": ["posición", "localización", "sitio"],
+      "color": ["tono"],
+      "calibre": ["grosor", "espesor"],
+      "tablilla": ["terminal", "conector", "borne", "bornes"]
+    };
 
-        function expandQuery(query) {
-            let words = query.toLowerCase().split(/\s+/);
-            let expanded = [...words];
-            words.forEach(word => {
-                if (synonyms[word]) {
-                    expanded = expanded.concat(synonyms[word]);
-                }
-            });
-            return [...new Set(expanded)];
+    function expandQuery(query) {
+      let words = query.toLowerCase().split(/\s+/);
+      let expanded = [...words];
+      words.forEach(word => {
+        if (synonyms[word]) {
+          expanded = expanded.concat(synonyms[word]);
         }
+      });
+      return [...new Set(expanded)];
+    }
 
-        const fuse = new Fuse(faqData, {
-            keys: ['question'],
-            threshold: 0.4,
-            includeScore: true
-        });
+    const fuse = new Fuse(faqData, {
+      keys: ['question', 'answer'],
+      threshold: 0.4,
+      includeScore: true
+    });
 
-        document.getElementById('searchInput').addEventListener('input', function () {
-            const query = this.value.trim();
-            const faqContainer = document.getElementById('faqContainer');
-            faqContainer.innerHTML = '';
+    document.getElementById('searchInput').addEventListener('input', function () {
+      const query = this.value.trim();
+      const faqContainer = document.getElementById('faqContainer');
+      faqContainer.innerHTML = '';
 
-            if (query === '') return;
+      if (query === '') return;
 
-            const expandedWords = expandQuery(query);
-            const results = fuse.search(expandedWords.join(' '));
+      const expandedWords = expandQuery(query);
+      const results = fuse.search(expandedWords.join(' '));
 
-            if (results.length === 0) {
-                faqContainer.innerHTML = '<p class="no-results">No se encontraron resultados. Intenta con otras palabras.</p>';
-                return;
-            }
+      if (results.length === 0) {
+        faqContainer.innerHTML = '<p class="no-results">No se encontraron resultados. Intenta con otras palabras.</p>';
+        return;
+      }
 
-            results.forEach(result => {
-                const item = result.item;
-                const faqItem = document.createElement('div');
-                faqItem.className = 'faq-item';
-                faqItem.innerHTML = `<h2>${item.question}</h2><p>${item.answer}</p>`;
-                faqContainer.appendChild(faqItem);
-            });
-        });
-    </script>
+      results.forEach(result => {
+        const item = result.item;
+        const faqItem = document.createElement('div');
+        faqItem.className = 'faq-item';
+        faqItem.innerHTML = `<h2>${item.question}</h2><p>${item.answer}</p>`;
+        faqContainer.appendChild(faqItem);
+      });
+    });
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+  </script>
 </body>
 </html>
