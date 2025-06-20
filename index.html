@@ -190,7 +190,25 @@
         faqItem.innerHTML = `<h2>${item.question}</h2><p>${item.answer}</p>`;
         faqContainer.appendChild(faqItem);
       });
+
+      // Detect special phrases and show corresponding links
+      const resultadoExtra = detectarEnlacesEspeciales(query);
+      faqContainer.innerHTML += resultadoExtra;
     });
+
+    function detectarEnlacesEspeciales(texto) {
+      const lower = texto.toLowerCase();
+
+      if (lower.includes("see xp")) {
+        return `<p>🔗 Enlace al sistema SEE XP: <a href="https://seepmviewer-prd.nam.se.com:708/Home" target="_blank">Abrir SEE XP</a></p>`;
+      }
+
+      if (lower.includes("ordenes ia") || lower.includes("órdenes ia")) {
+        return `<p>📁 Enlace a las Órdenes IA: <a href="https://schneiderelectric.sharepoint.com/:f:/r/sites/ProjectEngineeringGroup/Shared%20Documents/General/Dept_Ingenieria/Ordenes%20IA?csf=1&web=1&e=gEHTUk" target="_blank">Ver Órdenes IA</a></p>`;
+      }
+
+      return "";
+    }
 
     function toggleDarkMode() {
       document.body.classList.toggle('dark-mode');
