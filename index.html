@@ -1,16 +1,15 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbot de Preguntas Frecuentes</title>
+    <title>Buscador de Preguntas Frecuentes</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
             margin: 0;
             padding: 0;
+            background-color: #f4f4f4;
         }
         .container {
             max-width: 800px;
@@ -18,59 +17,73 @@
             padding: 20px;
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
         }
         h1 {
             text-align: center;
             color: #333;
         }
-        .search-box {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        .search-box input {
-            width: 80%;
+        input[type="text"] {
+            width: 100%;
             padding: 10px;
-            border: 1px solid #ddd;
+            margin: 20px 0;
+            border: 1px solid #ccc;
             border-radius: 4px;
-            font-size: 16px;
         }
-        .result {
-            margin-top: 20px;
+        .faq-item {
+            margin: 20px 0;
         }
-        .result p {
-            background-color: #e9ecef;
-            padding: 10px;
-            border-radius: 4px;
+        .faq-item h2 {
+            color: #007BFF;
+        }
+        .faq-item p {
+            color: #555;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Chatbot de Preguntas Frecuentes</h1>
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Escribe tu pregunta...">
-        </div>
-        <div class="result" id="result"></div>
+        <h1>Buscador de Preguntas Frecuentes</h1>
+        <input type="text" id="searchInput" placeholder="Escribe tu pregunta aquí...">
+        <div id="faqContainer"></div>
     </div>
-
     <script>
-        // Load FAQ data from JSON file
-        fetch('faq_data.json')
-            .then(response => response.json())
-            .then(data => {
-                const faqData = data;
-                const searchInput = document.getElementById('searchInput');
-                const resultDiv = document.getElementById('result');
+        const faqData = [
+            {
+                question: "¿Es correcto el alambrado o el tipo de cableado (MTW vs SIS)?",
+                answer: "Se debe respetar el tipo de cable indicado en los planos eléctricos. En muchos casos, se ha corregido la nota general para especificar que se debe usar cable tipo SIS, incluso si inicialmente se indicaba MTW. Verificar la revisión más reciente del plano correspondiente."
+            },
+            {
+                question: "¿Dónde debe ir ubicada la tablilla o el equipo (por ejemplo, STB1, TB9, etc.)?",
+                answer: "La ubicación debe coincidir con la representación física. Si el plano indica una celda incorrecta, se debe actualizar para reflejar la ubicación real del equipo. Consultar la revisión del plano para confirmar los cambios."
+            },
+            {
+                question: "¿Qué color o calibre debe tener el cable en ciertos bornes?",
+                answer: "El color y calibre deben seguir el estándar del proyecto. Por ejemplo, conexiones a tierra suelen ir en blanco o gris, y el calibre puede variar entre #14 y #16 según el borne y la función. Se han hecho ajustes en los planos para unificar estos criterios."
+            },
+            {
+                question: "¿Se deben usar tablillas de paso o conexiones directas?",
+                answer: "Depende del diseño del circuito. En algunos casos, se ha indicado que no se deben usar tablillas de interconexión entre secciones si estas forman una sola unidad de embarque. En otros, se agregan tablillas para facilitar el montaje."
+            },
+            {
+                question: "¿Qué hacer si hay discrepancias entre el plano unifilar, el 3D y la lista de materiales?",
+                answer: "Siempre se debe validar con la versión más reciente del plano. Si hay diferencias, se deben corregir los planos o cargar los materiales faltantes. Las decisiones deben basarse en la revisión más actual y en la validación del ingeniero responsable."
+            }
+        ];
 
-                searchInput.addEventListener('input', () => {
-                    const query = searchInput.value.toLowerCase();
-                    const result = faqData.find(faq => faq.question.toLowerCase().includes(query));
-                    resultDiv.innerHTML = result ? `<p><strong>Pregunta:</strong> ${result.question}<br><strong>Respuesta:</strong> ${result.answer}</p>` : '<p>No se encontró ninguna coincidencia.</p>';
-                });
-            })
-            .catch(error => console.error('Error al cargar los datos del FAQ:', error));
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            const faqContainer = document.getElementById('faqContainer');
+            faqContainer.innerHTML = '';
+
+            faqData.forEach(item => {
+                if (item.question.toLowerCase().includes(query)) {
+                    const faqItem = document.createElement('div');
+                    faqItem.className = 'faq-item';
+                    faqItem.innerHTML = `<h2>${item.question}</h2><p>${item.answer}</p>`;
+                    faqContainer.appendChild(faqItem);
+                }
+            });
+        });
     </script>
 </body>
 </html>
